@@ -142,3 +142,26 @@ BOOST_AUTO_TEST_CASE(FindPointerTest)
 	BOOST_CHECK(FindPointer(range, pred3) == &*items.begin());
 	BOOST_CHECK(FindPointer(range, pred4) == &*next(items.begin(), 1));
 }
+
+BOOST_AUTO_TEST_CASE(FindOptionalTest)
+{
+	forward_list<IntegerNCM> items;
+	items.emplace_front(1);
+	items.emplace_front(2);
+	items.emplace_front(3);
+	items.emplace_front(4);
+	items.emplace_front(5);
+	forward_list<IntegerNCM> const& itemsConst = items;
+
+	const RangeNCM<decltype(itemsConst.begin())> range(itemsConst.begin(), itemsConst.end());
+
+	const PredNCM<IntegerNCM> pred1([](IntegerNCM const& item) { return item.value == 2; });
+	const PredNCM<IntegerNCM> pred2([](IntegerNCM const& item) { return false; });
+	const PredNCM<IntegerNCM> pred3([](IntegerNCM const& item) { return true; });
+	const PredNCM<IntegerNCM> pred4([](IntegerNCM const& item) { return item.value == 4; });
+
+	BOOST_CHECK(FindOptional(range, pred1)->value == 2);
+	BOOST_CHECK(FindOptional(range, pred2) == boost::none);
+	BOOST_CHECK(FindOptional(range, pred3)->value == 5);
+	BOOST_CHECK(FindOptional(range, pred4)->value == 4);
+}

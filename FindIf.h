@@ -27,3 +27,18 @@ decltype(auto) FindPointer(Range&& range, Predicate&& predicate)
 	}
 	return static_cast<decltype(&*range.begin())>(nullptr);
 }
+
+template<class Range, class Predicate>
+decltype(auto) FindOptional(Range&& range, Predicate&& predicate)
+{
+	using Result = boost::optional<decltype(*range.begin())>;
+
+	for (auto const& elem : range)
+	{
+		if (predicate(elem))
+		{
+			return Result(elem);
+		}
+	}
+	return Result();
+}
