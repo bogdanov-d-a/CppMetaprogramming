@@ -163,3 +163,18 @@ BOOST_AUTO_TEST_CASE(FindOptionalTest)
 	BOOST_CHECK(FindOptional(range, pred3)->value == 5);
 	BOOST_CHECK(FindOptional(range, pred4)->value == 4);
 }
+
+BOOST_AUTO_TEST_CASE(MoveCaptureLambdaTest)
+{
+	auto val1 = std::make_unique<int>(2);
+	auto val2 = std::make_unique<int>(4);
+
+	const std::forward_list<int> items = { 5, 4, 3, 2, 1 };
+	BOOST_CHECK(FindIndex(items, [v = std::move(val1)](int item) { return item == *v; }) == 3);
+	BOOST_CHECK(FindIndex(items, [](int item) { return false; }) == -1);
+	BOOST_CHECK(FindIndex(items, [](int item) { return true; }) == 0);
+	BOOST_CHECK(FindIndex(items, [v = std::move(val2)](int item) { return item == *v; }) == 1);
+
+	BOOST_CHECK(!val1);
+	BOOST_CHECK(!val2);
+}
