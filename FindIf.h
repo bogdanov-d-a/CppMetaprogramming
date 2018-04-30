@@ -6,7 +6,7 @@ size_t FindIndex(Range&& range, Predicate&& predicate)
 	size_t index = 0;
 	for (auto const& elem : range)
 	{
-		if (invoke(predicate, elem))
+		if (std::invoke(predicate, elem))
 		{
 			return index;
 		}
@@ -20,7 +20,7 @@ decltype(auto) FindPointer(Range&& range, Predicate&& predicate)
 {
 	for (auto const& elem : range)
 	{
-		if (invoke(predicate, elem))
+		if (std::invoke(predicate, elem))
 		{
 			return &elem;
 		}
@@ -35,7 +35,7 @@ decltype(auto) FindOptional(Range&& range, Predicate&& predicate)
 
 	for (auto const& elem : range)
 	{
-		if (invoke(predicate, elem))
+		if (std::invoke(predicate, elem))
 		{
 			return Result(elem);
 		}

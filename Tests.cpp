@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "FindIf.h"
 
-using namespace std;
-
 namespace
 {
 
@@ -55,24 +53,24 @@ template<typename T>
 class PredNCM : public NonCopyableNonMovable
 {
 public:
-	explicit PredNCM(function<bool(T const&)> const& func)
+	explicit PredNCM(std::function<bool(T const&)> const& func)
 		: m_func(func)
 	{}
 
 	bool operator()(T const& item) const
 	{
-		return invoke(m_func, item);
+		return std::invoke(m_func, item);
 	}
 
 private:
-	function<bool(T const&)> m_func;
+	std::function<bool(T const&)> m_func;
 };
 
 }
 
 BOOST_AUTO_TEST_CASE(FindIndexVectorTest)
 {
-	const vector<int> items = { 5, 4, 3, 2, 1 };
+	const std::vector<int> items = { 5, 4, 3, 2, 1 };
 	BOOST_CHECK(FindIndex(items, [](int item) { return item == 2; }) == 3);
 	BOOST_CHECK(FindIndex(items, [](int item) { return false; }) == -1);
 	BOOST_CHECK(FindIndex(items, [](int item) { return true; }) == 0);
@@ -81,7 +79,7 @@ BOOST_AUTO_TEST_CASE(FindIndexVectorTest)
 
 BOOST_AUTO_TEST_CASE(FindIndexSetTest)
 {
-	const set<int> items = { 5, 4, 3, 2, 1 };
+	const std::set<int> items = { 5, 4, 3, 2, 1 };
 	BOOST_CHECK(FindIndex(items, [](int item) { return item == 2; }) == 1);
 	BOOST_CHECK(FindIndex(items, [](int item) { return false; }) == -1);
 	BOOST_CHECK(FindIndex(items, [](int item) { return true; }) == 0);
@@ -90,7 +88,7 @@ BOOST_AUTO_TEST_CASE(FindIndexSetTest)
 
 BOOST_AUTO_TEST_CASE(FindIndexListTest)
 {
-	const forward_list<int> items = { 5, 4, 3, 2, 1 };
+	const std::forward_list<int> items = { 5, 4, 3, 2, 1 };
 	BOOST_CHECK(FindIndex(items, [](int item) { return item == 2; }) == 3);
 	BOOST_CHECK(FindIndex(items, [](int item) { return false; }) == -1);
 	BOOST_CHECK(FindIndex(items, [](int item) { return true; }) == 0);
@@ -99,13 +97,13 @@ BOOST_AUTO_TEST_CASE(FindIndexListTest)
 
 BOOST_AUTO_TEST_CASE(FindIndexNoncopyableNonmovableItemTest)
 {
-	forward_list<IntegerNCM> items;
+	std::forward_list<IntegerNCM> items;
 	items.emplace_front(1);
 	items.emplace_front(2);
 	items.emplace_front(3);
 	items.emplace_front(4);
 	items.emplace_front(5);
-	forward_list<IntegerNCM> const& itemsConst = items;
+	std::forward_list<IntegerNCM> const& itemsConst = items;
 
 	const RangeNCM<decltype(itemsConst.begin())> range(itemsConst.begin(), itemsConst.end());
 
@@ -122,13 +120,13 @@ BOOST_AUTO_TEST_CASE(FindIndexNoncopyableNonmovableItemTest)
 
 BOOST_AUTO_TEST_CASE(FindPointerTest)
 {
-	forward_list<IntegerNCM> items;
+	std::forward_list<IntegerNCM> items;
 	items.emplace_front(1);
 	items.emplace_front(2);
 	items.emplace_front(3);
 	items.emplace_front(4);
 	items.emplace_front(5);
-	forward_list<IntegerNCM> const& itemsConst = items;
+	std::forward_list<IntegerNCM> const& itemsConst = items;
 
 	const RangeNCM<decltype(itemsConst.begin())> range(itemsConst.begin(), itemsConst.end());
 
@@ -145,13 +143,13 @@ BOOST_AUTO_TEST_CASE(FindPointerTest)
 
 BOOST_AUTO_TEST_CASE(FindOptionalTest)
 {
-	forward_list<IntegerNCM> items;
+	std::forward_list<IntegerNCM> items;
 	items.emplace_front(1);
 	items.emplace_front(2);
 	items.emplace_front(3);
 	items.emplace_front(4);
 	items.emplace_front(5);
-	forward_list<IntegerNCM> const& itemsConst = items;
+	std::forward_list<IntegerNCM> const& itemsConst = items;
 
 	const RangeNCM<decltype(itemsConst.begin())> range(itemsConst.begin(), itemsConst.end());
 
