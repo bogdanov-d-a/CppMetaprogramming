@@ -14,3 +14,16 @@ size_t FindIndex(Range&& range, Predicate&& predicate)
 	}
 	return -1;
 }
+
+template<class Range, class Predicate>
+decltype(auto) FindPointer(Range&& range, Predicate&& predicate)
+{
+	for (auto const& elem : range)
+	{
+		if (predicate(elem))
+		{
+			return &elem;
+		}
+	}
+	return static_cast<decltype(&*range.begin())>(nullptr);
+}
