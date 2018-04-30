@@ -61,7 +61,7 @@ public:
 
 	bool operator()(T const& item) const
 	{
-		return m_func(item);
+		return invoke(m_func, item);
 	}
 
 private:
