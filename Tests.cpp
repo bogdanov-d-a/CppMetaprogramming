@@ -178,3 +178,16 @@ BOOST_AUTO_TEST_CASE(MoveCaptureLambdaTest)
 	BOOST_CHECK(!val1);
 	BOOST_CHECK(!val2);
 }
+
+BOOST_AUTO_TEST_CASE(ModifyingPredicateTest)
+{
+	std::forward_list<int> items = { 5, 4, 3, 2, 1 };
+
+	BOOST_CHECK(FindIndex(items, [](int &item) { return item == 2; }) == 3);
+	BOOST_CHECK(FindIndex(items, [](int &item) { return false; }) == -1);
+	BOOST_CHECK(FindIndex(items, [](int &item) { return item == 4; }) == 1);
+
+	BOOST_CHECK(FindIndex(items, [](int &item) { return item == 5; }) == 0);
+	BOOST_CHECK(FindIndex(items, [](int &item) { item = 0; return true; }) == 0);
+	BOOST_CHECK(FindIndex(items, [](int &item) { return item == 5; }) == -1);
+}

@@ -4,7 +4,7 @@ template<class Range, class Predicate>
 size_t FindIndex(Range&& range, Predicate&& predicate)
 {
 	size_t index = 0;
-	for (auto const& elem : range)
+	for (auto && elem : range)
 	{
 		if (std::invoke(predicate, elem))
 		{
@@ -18,7 +18,7 @@ size_t FindIndex(Range&& range, Predicate&& predicate)
 template<class Range, class Predicate>
 decltype(auto) FindPointer(Range&& range, Predicate&& predicate)
 {
-	for (auto const& elem : range)
+	for (auto && elem : range)
 	{
 		if (std::invoke(predicate, elem))
 		{
@@ -33,7 +33,7 @@ decltype(auto) FindOptional(Range&& range, Predicate&& predicate)
 {
 	using Result = boost::optional<decltype(*range.begin())>;
 
-	for (auto const& elem : range)
+	for (auto && elem : range)
 	{
 		if (std::invoke(predicate, elem))
 		{
