@@ -12,7 +12,7 @@ size_t FindIndex(Range&& range, Predicate&& predicate)
 		}
 		++index;
 	}
-	return -1;
+	return static_cast<size_t>(-1);
 }
 
 template<class Range, class Predicate>
