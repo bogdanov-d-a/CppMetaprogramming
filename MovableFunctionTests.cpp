@@ -11,7 +11,7 @@ void FreeFunction()
 	g_freeFunctionCalled = true;
 }
 
-}
+	}
 
 BOOST_AUTO_TEST_CASE(EmptyTest)
 {
@@ -38,4 +38,12 @@ BOOST_AUTO_TEST_CASE(FreeFunctionTest)
 	BOOST_CHECK(!g_freeFunctionCalled);
 	f();
 	BOOST_CHECK(g_freeFunctionCalled);
+}
+
+BOOST_AUTO_TEST_CASE(LambdaTest)
+{
+	bool called = false;
+	MovableFunction f([&called]() { called = true; });
+	f();
+	BOOST_CHECK(called);
 }
