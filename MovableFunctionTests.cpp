@@ -97,3 +97,10 @@ BOOST_AUTO_TEST_CASE(ArgsTest)
 	MovableFunction<int, int, int> f(add);
 	BOOST_CHECK(f(42, 1337) == 1379);
 }
+
+BOOST_AUTO_TEST_CASE(MovableLambdaTest)
+{
+	MovableFunction<int> f([data = std::make_unique<int>(42)]() { return *data; });
+	f();
+	BOOST_CHECK(f() == 42);
+}
