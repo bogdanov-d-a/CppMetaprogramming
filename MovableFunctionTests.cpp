@@ -88,3 +88,12 @@ BOOST_AUTO_TEST_CASE(BindTest)
 	MovableFunction<int> f(std::bind(add, 42, 1337));
 	BOOST_CHECK(f() == 1379);
 }
+
+BOOST_AUTO_TEST_CASE(ArgsTest)
+{
+	const auto add = [](int a, int b) {
+		return a + b;
+	};
+	MovableFunction<int, int, int> f(add);
+	BOOST_CHECK(f(42, 1337) == 1379);
+}
