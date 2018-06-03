@@ -79,3 +79,12 @@ BOOST_AUTO_TEST_CASE(MinimalFunctionTest)
 	f();
 	BOOST_CHECK(called);
 }
+
+BOOST_AUTO_TEST_CASE(BindTest)
+{
+	const auto add = [](int a, int b) {
+		return a + b;
+	};
+	MovableFunction<int> f(std::bind(add, 42, 1337));
+	BOOST_CHECK(f() == 1379);
+}
