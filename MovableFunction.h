@@ -3,19 +3,22 @@
 namespace MovableFunctionDetails
 {
 
-typedef void(*FreeFunction)();
+template<typename ResultType>
+using FreeFunction = ResultType(*)();
 
+template<typename ResultType>
 class Holder
 {
 public:
 	virtual ~Holder() = default;
-	virtual void operator()() const = 0;
+	virtual ResultType operator()() const = 0;
 };
 
-class FreeFunctionHolder : public Holder
+template<typename ResultType>
+class FreeFunctionHolder : public Holder<ResultType>
 {
 public:
-	explicit FreeFunctionHolder(FreeFunction function)
+	explicit FreeFunctionHolder(FreeFunction<ResultType> function)
 		: m_function(function)
 	{
 		if (!m_function)
@@ -24,17 +27,17 @@ public:
 		}
 	}
 
-	void operator()() const final
+	ResultType operator()() const final
 	{
-		m_function();
+		return m_function();
 	}
 
 private:
-	FreeFunction m_function = nullptr;
+	FreeFunction<ResultType> m_function = nullptr;
 };
 
-template<typename T>
-class TemplatedFunctionHolder : public Holder
+template<typename T, typename ResultType>
+class TemplatedFunctionHolder : public Holder<ResultType>
 {
 public:
 	explicit TemplatedFunctionHolder(T && function)
@@ -42,9 +45,9 @@ public:
 	{
 	}
 
-	void operator()() const final
+	ResultType operator()() const final
 	{
-		m_function();
+		return m_function();
 	}
 
 private:
@@ -53,6 +56,7 @@ private:
 
 }
 
+template<typename ResultType>
 class MovableFunction
 {
 public:
@@ -60,26 +64,26 @@ public:
 	{
 	}
 
-	explicit MovableFunction(MovableFunctionDetails::FreeFunction function)
-		: m_holder(std::make_unique<MovableFunctionDetails::FreeFunctionHolder>(function))
+	explicit MovableFunction(MovableFunctionDetails::FreeFunction<ResultType> function)
+		: m_holder(std::make_unique<MovableFunctionDetails::FreeFunctionHolder<ResultType>>(function))
 	{
 	}
 
 	template<typename FunctionType>
 	explicit MovableFunction(FunctionType && function)
-		: m_holder(std::make_unique<MovableFunctionDetails::TemplatedFunctionHolder<FunctionType>>(std::move(function)))
+		: m_holder(std::make_unique<MovableFunctionDetails::TemplatedFunctionHolder<FunctionType, ResultType>>(std::move(function)))
 	{
 	}
 
-	void operator()() const
+	ResultType operator()() const
 	{
 		if (!m_holder)
 		{
 			throw std::bad_function_call();
 		}
-		(*m_holder)();
+		return (*m_holder)();
 	}
 
 private:
-	std::unique_ptr<MovableFunctionDetails::Holder> m_holder;
+	std::unique_ptr<MovableFunctionDetails::Holder<ResultType>> m_holder;
 };

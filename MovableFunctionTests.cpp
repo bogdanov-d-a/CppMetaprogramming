@@ -37,7 +37,7 @@ private:
 
 BOOST_AUTO_TEST_CASE(EmptyTest)
 {
-	MovableFunction f;
+	MovableFunction<void> f;
 	BOOST_CHECK(!g_freeFunctionCalled);
 
 	bool thrown = false;
@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE(EmptyTest)
 
 BOOST_AUTO_TEST_CASE(FreeFunctionTest)
 {
-	MovableFunction f(FreeFunction);
+	MovableFunction<void> f(FreeFunction);
 	BOOST_CHECK(!g_freeFunctionCalled);
 	f();
 	BOOST_CHECK(g_freeFunctionCalled);
@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE(FreeFunctionTest)
 BOOST_AUTO_TEST_CASE(LambdaTest)
 {
 	bool called = false;
-	MovableFunction f([&called]() { called = true; });
+	MovableFunction<void> f([&called]() { called = true; });
 	f();
 	BOOST_CHECK(called);
 }
@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE(MinimalFunctionTest)
 {
 	bool called = false;
 	MinimalFunction mf(called);
-	MovableFunction f(std::move(mf));
+	MovableFunction<void> f(std::move(mf));
 	BOOST_CHECK(!called);
 	f();
 	BOOST_CHECK(called);
