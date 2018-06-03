@@ -11,11 +11,16 @@ void FreeFunction()
 	g_freeFunctionCalled = true;
 }
 
-class MinimalFunction
+class MinimalFunction : public boost::noncopyable
 {
 public:
 	explicit MinimalFunction(bool &called)
 		: m_called(called)
+	{
+	}
+
+	explicit MinimalFunction(MinimalFunction && other)
+		: m_called(other.m_called)
 	{
 	}
 
@@ -69,7 +74,7 @@ BOOST_AUTO_TEST_CASE(MinimalFunctionTest)
 {
 	bool called = false;
 	MinimalFunction mf(called);
-	MovableFunction f(mf);
+	MovableFunction f(std::move(mf));
 	BOOST_CHECK(!called);
 	f();
 	BOOST_CHECK(called);

@@ -37,8 +37,8 @@ template<typename T>
 class TemplatedFunctionHolder : public Holder
 {
 public:
-	explicit TemplatedFunctionHolder(T function)
-		: m_function(function)
+	explicit TemplatedFunctionHolder(T && function)
+		: m_function(std::move(function))
 	{
 	}
 
@@ -66,8 +66,8 @@ public:
 	}
 
 	template<typename FunctionType>
-	explicit MovableFunction(FunctionType function)
-		: m_holder(std::make_unique<MovableFunctionDetails::TemplatedFunctionHolder<FunctionType>>(function))
+	explicit MovableFunction(FunctionType && function)
+		: m_holder(std::make_unique<MovableFunctionDetails::TemplatedFunctionHolder<FunctionType>>(std::move(function)))
 	{
 	}
 
