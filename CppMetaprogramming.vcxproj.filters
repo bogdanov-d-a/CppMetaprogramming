@@ -21,12 +21,18 @@
     <ClInclude Include="FindIf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MovableFunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MovableFunctionTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
