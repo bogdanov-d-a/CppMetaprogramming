@@ -11,7 +11,24 @@ void FreeFunction()
 	g_freeFunctionCalled = true;
 }
 
+class MinimalFunction
+{
+public:
+	explicit MinimalFunction(bool &called)
+		: m_called(called)
+	{
 	}
+
+	void operator()() const
+	{
+		m_called = true;
+	}
+
+private:
+	bool &m_called;
+};
+
+}
 
 BOOST_AUTO_TEST_CASE(EmptyTest)
 {
@@ -44,6 +61,16 @@ BOOST_AUTO_TEST_CASE(LambdaTest)
 {
 	bool called = false;
 	MovableFunction f([&called]() { called = true; });
+	f();
+	BOOST_CHECK(called);
+}
+
+BOOST_AUTO_TEST_CASE(MinimalFunctionTest)
+{
+	bool called = false;
+	MinimalFunction mf(called);
+	MovableFunction f(mf);
+	BOOST_CHECK(!called);
 	f();
 	BOOST_CHECK(called);
 }
