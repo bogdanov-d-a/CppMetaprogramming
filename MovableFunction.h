@@ -4,14 +4,14 @@ namespace MovableFunctionDetails
 {
 
 template<typename ResultType, typename... ArgsType>
-using FreeFunction = ResultType(*)(ArgsType...);
+using FreeFunction = ResultType(*)(ArgsType&&...);
 
 template<typename ResultType, typename... ArgsType>
 class Holder
 {
 public:
 	virtual ~Holder() = default;
-	virtual ResultType operator()(ArgsType...) const = 0;
+	virtual ResultType operator()(ArgsType&&...) const = 0;
 };
 
 template<typename ResultType, typename... ArgsType>
@@ -27,9 +27,9 @@ public:
 		}
 	}
 
-	ResultType operator()(ArgsType... args) const final
+	ResultType operator()(ArgsType&&... args) const final
 	{
-		return m_function(args...);
+		return std::invoke(m_function, std::forward<ArgsType>(args)...);
 	}
 
 private:
@@ -41,13 +41,13 @@ class TemplatedFunctionHolder : public Holder<ResultType, ArgsType...>
 {
 public:
 	explicit TemplatedFunctionHolder(T && function)
-		: m_function(std::move(function))
+		: m_function(std::forward<T>(function))
 	{
 	}
 
-	ResultType operator()(ArgsType... args) const final
+	ResultType operator()(ArgsType&&... args) const final
 	{
-		return m_function(args...);
+		return std::invoke(m_function, std::forward<ArgsType>(args)...);
 	}
 
 private:
@@ -71,17 +71,17 @@ public:
 
 	template<typename FunctionType>
 	explicit MovableFunction(FunctionType && function)
-		: m_holder(std::make_unique<MovableFunctionDetails::TemplatedFunctionHolder<FunctionType, ResultType, ArgsType...>>(std::move(function)))
+		: m_holder(std::make_unique<MovableFunctionDetails::TemplatedFunctionHolder<FunctionType, ResultType, ArgsType...>>(std::forward<FunctionType>(function)))
 	{
 	}
 
-	ResultType operator()(ArgsType... args) const
+	ResultType operator()(ArgsType&&... args) const
 	{
 		if (!m_holder)
 		{
 			throw std::bad_function_call();
 		}
-		return (*m_holder)(args...);
+		return std::invoke(*m_holder, std::forward<ArgsType>(args)...);
 	}
 
 private:

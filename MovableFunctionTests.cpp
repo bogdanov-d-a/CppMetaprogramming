@@ -104,3 +104,18 @@ BOOST_AUTO_TEST_CASE(MovableLambdaTest)
 	f();
 	BOOST_CHECK(f() == 42);
 }
+
+BOOST_AUTO_TEST_CASE(MovableArgumentRefTest)
+{
+	MovableFunction<int, std::unique_ptr<int> const&> f([](std::unique_ptr<int> const& data) { return *data; });
+	auto data = std::make_unique<int>(1337);
+	BOOST_CHECK(f(data) == 1337);
+	BOOST_CHECK(*data == 1337);
+}
+
+BOOST_AUTO_TEST_CASE(MovableArgumentMoveTest)
+{
+	MovableFunction<int, std::unique_ptr<int>> f([](std::unique_ptr<int> data) { return *data; });
+	auto data = std::make_unique<int>(1337);
+	BOOST_CHECK(f(std::move(data)) == 1337);
+}
